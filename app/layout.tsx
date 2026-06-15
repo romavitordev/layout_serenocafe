@@ -1,13 +1,19 @@
 import './globals.css'
 
 import type { Metadata } from 'next'
-import { DM_Sans, Fraunces } from 'next/font/google'
+import { DM_Sans, Fraunces, JetBrains_Mono } from 'next/font/google'
 
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
 import { LenisProvider } from '@/components/layout/LenisProvider'
 import { PageTransition } from '@/components/layout/PageTransition'
-import { brand, endereco, imagens } from '@/lib/site'
+import { GrainOverlay } from '@/components/fx/GrainOverlay'
+import { Preloader } from '@/components/fx/Preloader'
+import { CustomCursor } from '@/components/fx/CustomCursor'
+import { ScrollProgress } from '@/components/fx/ScrollProgress'
+import { AmbientSound } from '@/components/fx/AmbientSound'
+import { ReservaModal } from '@/components/home/ReservaModal'
+import { avaliacaoResumo, brand, cardapio, endereco, imagens } from '@/lib/site'
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -19,6 +25,13 @@ const fraunces = Fraunces({
 const dmSans = DM_Sans({
   subsets: ['latin'],
   variable: '--font-dm-sans',
+  display: 'swap',
+})
+
+const jetbrains = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
   display: 'swap',
 })
 
@@ -86,12 +99,26 @@ const jsonLd = {
       closes: '18:00',
     },
   ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: avaliacaoResumo.media,
+    reviewCount: String(avaliacaoResumo.total),
+    bestRating: '5',
+  },
+  hasMenu: {
+    '@type': 'Menu',
+    hasMenuSection: cardapio.map((c) => ({
+      '@type': 'MenuSection',
+      name: c.categoria,
+      hasMenuItem: c.itens.map((it) => ({ '@type': 'MenuItem', name: it.nome })),
+    })),
+  },
   sameAs: [brand.instagramUrl],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${fraunces.variable} ${dmSans.variable}`}>
+    <html lang="pt-BR" className={`${fraunces.variable} ${dmSans.variable} ${jetbrains.variable}`}>
       <body>
         <script
           type="application/ld+json"
@@ -104,6 +131,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Pular para o conteúdo
         </a>
 
+        <GrainOverlay />
+        <Preloader />
+        <CustomCursor />
+        <ScrollProgress />
         <LenisProvider />
         <Header />
         <PageTransition>
@@ -112,6 +143,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
         </PageTransition>
         <Footer />
+        <ReservaModal />
+        <AmbientSound />
       </body>
     </html>
   )
