@@ -84,7 +84,7 @@ export function HeroVideoScroll() {
       aria-label="Sereno — o instante antes do dia começar"
       className={estatico ? 'relative h-[100svh]' : 'relative h-[260vh]'}
     >
-      <div className="sticky top-0 h-[100svh] overflow-hidden bg-creme">
+      <div className="sticky top-0 h-[100svh] overflow-hidden bg-white">
         {/* Halo âmbar — atrás da xícara (centro no mobile, direita no desktop) */}
         <div
           ref={halo}
